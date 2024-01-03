@@ -1,0 +1,29 @@
+{{#if isFilesystem}}
+<route lang="yaml">
+meta:
+  title: {{ title }}
+
+  {{#if hasIcon}}
+  icon: {{ icon }}
+  {{/if}}
+
+  {{#if !layout}}
+  layout: {{ layout }}
+  {{/if}}
+</route>
+
+{{/if}}
+<script setup lang="ts">
+defineOptions({
+  name: '{{ properCase componentName }}',
+})
+</script>
+
+<template>
+  <div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+
+</style>
