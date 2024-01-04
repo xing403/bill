@@ -26,6 +26,15 @@ const routes: RouteRecordRaw = {
       title: '添加账单',
       icon: 'ep:plus',
     },
+  }, {
+    path: 'edit/:id',
+    name: 'bill-edit',
+    component: () => import('@/views/bill/edit.vue'),
+    props: true,
+    meta: {
+      title: '修改账单',
+      icon: 'ep:edit',
+    },
   }],
 }
 

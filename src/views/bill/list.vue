@@ -1,8 +1,3 @@
-<route lang="yaml">
-meta:
-  title: 账单列表
-  </route>
-
 <script setup lang="ts">
 import { ElMessage, dayjs } from 'element-plus'
 import billApi from '@/api/modules/bill'
@@ -69,10 +64,10 @@ watch(isNoMore, (value) => {
           <template #header>
             <div class="card-header" flex="~ row gap-1 items-center justify-between">
               <div flex="~ col gap-1 items-center" text-left>
-                <span text-2xl font-600 v-text="item.title" />
+                <el-link :href="`#/bill/edit/${item.id}`" class="bill-title" :underline="false" v-text="item.title" />
                 <span class="text-secondary" text-xs v-text="item.dataTime" />
               </div>
-              <span text-2xl v-text="`${item.type === 2 ? '-' : '+'}${item.amount}` " />
+              <span text-2xl v-text="`${item.type === 2 ? '-' : '+'}${item.amount}`" />
             </div>
           </template>
           <div v-if="item.detail === '' || item.detail === null" class="bill-detail text-secondary">
@@ -104,18 +99,22 @@ watch(isNoMore, (value) => {
   opacity: 0;
   transform: translateX(30px);
 }
-</style>
 
-<style lang="postcss" scoped>
 .bill-item {
-  @apply my-1;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 
   .text-secondary {
     color: var(--el-text-color-secondary);
   }
 }
 
+::v-deep .bill-title.el-link {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
 .page-main {
-  @apply p-2;
+  padding: 0.5rem;
 }
 </style>

@@ -34,13 +34,19 @@ api.interceptors.response.use(
       if (code === 0) {
         return resolve(response.data)
       }
-      else if (code === 40100) {
-        useUserStore().logout()
-        ElMessage.error(response.data.message)
-        return reject(response.data)
-      }
       else {
         ElMessage.error(response.data.message)
+
+        if (code === 40100) {
+          useUserStore().logout()
+        }
+        else if (code === 40400) {
+          window.location.href = '/#/404'
+        }
+        else if (code === 40300) {
+          window.location.href = '/'
+        }
+
         return reject(response.data)
       }
     })
@@ -56,10 +62,7 @@ api.interceptors.response.use(
     else if (message.includes('Request failed with status code')) {
       message = `接口${message.substr(message.length - 3)}异常`
     }
-    ElMessage({
-      message,
-      type: 'error',
-    })
+    ElMessage.error(message)
     return Promise.reject(error)
   },
 )
