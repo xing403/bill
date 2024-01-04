@@ -18,23 +18,23 @@ const userStore = useUserStore()
 const formRef = ref<FormInstance>()
 const form = ref({
   password: '',
-  newpassword: '',
-  checkpassword: '',
+  newPassword: '',
+  checkPassword: '',
 })
 
 const rules = ref<FormRules>({
   password: [
     { required: true, message: '请输入原密码', trigger: 'blur' },
   ],
-  newpassword: [
+  newPassword: [
     { required: true, message: '请输入新密码', trigger: 'blur' },
     { min: 6, max: 18, trigger: 'blur', message: '密码长度为6到18位' },
   ],
-  checkpassword: [
+  checkPassword: [
     { required: true, message: '请输入新密码', trigger: 'blur' },
     {
       validator: (rule: any, value: any, callback: any) => {
-        if (value !== form.value.newpassword) {
+        if (value !== form.value.newPassword) {
           callback(new Error('请确认新密码'))
         }
         else {
@@ -48,11 +48,8 @@ const rules = ref<FormRules>({
 function onSubmit() {
   formRef.value && formRef.value.validate((valid) => {
     if (valid) {
-      userStore.editPassword(form.value).then(() => {
-        ElMessage({
-          type: 'success',
-          message: '模拟修改成功，请重新登录',
-        })
+      userStore.editPassword(form.value).then((res: any) => {
+        ElMessage.success(res.message)
         userStore.logout()
       })
     }
@@ -70,11 +67,11 @@ function onSubmit() {
             <el-form-item label="原密码" prop="password">
               <el-input v-model="form.password" type="password" placeholder="请输入原密码" show-password />
             </el-form-item>
-            <el-form-item label="新密码" prop="newpassword">
-              <el-input v-model="form.newpassword" type="password" placeholder="请输入原密码" show-password />
+            <el-form-item label="新密码" prop="newPassword">
+              <el-input v-model="form.newPassword" type="password" placeholder="请输入原密码" show-password />
             </el-form-item>
-            <el-form-item label="确认新密码" prop="checkpassword">
-              <el-input v-model="form.checkpassword" type="password" placeholder="请输入原密码" show-password />
+            <el-form-item label="确认新密码" prop="checkPassword">
+              <el-input v-model="form.checkPassword" type="password" placeholder="请输入原密码" show-password />
             </el-form-item>
           </el-form>
         </el-col>

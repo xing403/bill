@@ -12,6 +12,7 @@ const router = useRouter()
 
 const settingsStore = useSettingsStore()
 const userStore = useUserStore()
+const userInformation = computed(() => userStore.information)
 
 const mainPage = useMainPage()
 const { isFullscreen, toggle } = useFullscreen()
@@ -44,20 +45,26 @@ function userCommand(command: 'home' | 'setting' | 'hotkeys' | 'logout') {
       <span v-if="settingsStore.settings.navSearch.enable" class="item" @click="eventBus.emit('global-search-toggle')">
         <svg-icon name="ep-search" />
       </span>
-      <span v-if="settingsStore.mode === 'pc' && settingsStore.settings.toolbar.enableFullscreen" class="item" @click="toggle">
+      <span
+        v-if="settingsStore.mode === 'pc' && settingsStore.settings.toolbar.enableFullscreen" class="item"
+        @click="toggle"
+      >
         <svg-icon :name="isFullscreen ? 'fullscreen-exit' : 'fullscreen'" />
       </span>
       <span v-if="settingsStore.settings.toolbar.enablePageReload" class="item" @click="mainPage.reload()">
         <svg-icon name="ep-refresh-right" />
       </span>
-      <span v-if="settingsStore.settings.toolbar.enableColorScheme" class="item" @click="settingsStore.setColorScheme(settingsStore.settings.app.colorScheme === 'dark' ? 'light' : 'dark')">
+      <span
+        v-if="settingsStore.settings.toolbar.enableColorScheme" class="item"
+        @click="settingsStore.setColorScheme(settingsStore.settings.app.colorScheme === 'dark' ? 'light' : 'dark')"
+      >
         <svg-icon v-show="settingsStore.settings.app.colorScheme === 'light'" name="ep:sunny" />
         <svg-icon v-show="settingsStore.settings.app.colorScheme === 'dark'" name="ep:moon" />
       </span>
     </div>
     <el-dropdown class="user-container" size="default" @command="userCommand">
       <div class="user-wrapper">
-        <el-avatar size="small">
+        <el-avatar size="small" :src="userInformation.avatar">
           <svg-icon name="ep-user-filled" />
         </el-avatar>
         {{ userStore.account }}
@@ -71,9 +78,9 @@ function userCommand(command: 'home' | 'setting' | 'hotkeys' | 'logout') {
           <el-dropdown-item command="setting">
             个人设置
           </el-dropdown-item>
-          <el-dropdown-item v-if="settingsStore.mode === 'pc'" divided command="hotkeys">
+          <!-- <el-dropdown-item v-if="settingsStore.mode === 'pc'" divided command="hotkeys">
             快捷键介绍
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item divided command="logout">
             退出登录
           </el-dropdown-item>

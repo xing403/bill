@@ -10,28 +10,30 @@ const useUserStore = defineStore(
     const routeStore = useRouteStore()
     const menuStore = useMenuStore()
 
-    const account = ref(localStorage.account ?? '')
+    const account = ref(localStorage.username ?? '')
     const token = ref(localStorage.token ?? '')
     const failure_time = ref(localStorage.failure_time ?? '')
     const permissions = ref<string[]>([])
+    const information = ref<any>({})
     const isLogin = computed(() => {
-      let retn = false
+      let status = false
       if (token.value) {
         if (new Date().getTime() < Number.parseInt(failure_time.value) * 1000) {
-          retn = true
+          status = true
         }
       }
-      return retn
+      return status
     })
 
     // 登录
     async function login(data: {
-      account: string
+      username: string
       password: string
+      code: string
+      uuid: string
     }) {
-      // 通过 mock 进行登录
       const res = await apiUser.login(data)
-      localStorage.setItem('account', res.data.account)
+      localStorage.setItem('username', data.username)
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('failure_time', res.data.failure_time)
       account.value = res.data.account
@@ -40,7 +42,7 @@ const useUserStore = defineStore(
     }
     // 登出
     async function logout(redirect = router.currentRoute.value.fullPath) {
-      localStorage.removeItem('account')
+      localStorage.removeItem('username')
       localStorage.removeItem('token')
       localStorage.removeItem('failure_time')
       account.value = ''
@@ -57,15 +59,16 @@ const useUserStore = defineStore(
     }
     // 获取我的权限
     async function getPermissions() {
-      // 通过 mock 获取权限
-      const res = await apiUser.permission()
-      permissions.value = res.data.permissions
+      const res = await apiUser.information()
+      information.value = res.data
+      permissions.value = [res.data.auth]
       return permissions.value
     }
     // 修改密码
     async function editPassword(data: {
       password: string
-      newpassword: string
+      newPassword: string
+      checkPassword: string
     }) {
       await apiUser.passwordEdit(data)
     }
@@ -74,6 +77,7 @@ const useUserStore = defineStore(
       account,
       token,
       permissions,
+      information,
       isLogin,
       login,
       logout,

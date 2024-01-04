@@ -13,12 +13,9 @@ const api = axios.create({
 api.interceptors.request.use(
   (request) => {
     const userStore = useUserStore()
-    /**
-     * 全局拦截请求发送前提交的参数
-     * 以下代码为示例，在请求头里带上 token 信息
-     */
+
     if (userStore.isLogin && request.headers) {
-      request.headers.Token = userStore.token
+      request.headers.Authorization = userStore.token
     }
     // 是否将 POST 请求参数进行字符串化处理
     if (request.method === 'post') {
@@ -32,23 +29,21 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    /**
-     * 全局拦截请求发送后返回的数据，如果数据有报错则在这做全局的错误提示
-     * 假设返回数据格式为：{ status: 1, error: '', data: '' }
-     * 规则是当 status 为 1 时表示请求成功，为 0 时表示接口需要登录或者登录状态失效，需要重新登录
-     * 请求出错时 error 会返回错误信息
-     */
-    if (response.data.status === 1) {
-      if (response.data.error !== '') {
-        // 这里做错误提示，如果使用了 element plus 则可以使用 Message 进行提示
-        // ElMessage.error(options)
-        return Promise.reject(response.data)
+    return new Promise((resolve, reject) => {
+      const code = response.data.code ?? 0
+      if (code === 0) {
+        return resolve(response.data)
       }
-    }
-    else {
-      useUserStore().logout()
-    }
-    return Promise.resolve(response.data)
+      else if (code === 40100) {
+        useUserStore().logout()
+        ElMessage.error(response.data.message)
+        return reject(response.data)
+      }
+      else {
+        ElMessage.error(response.data.message)
+        return reject(response.data)
+      }
+    })
   },
   (error) => {
     let message = error.message

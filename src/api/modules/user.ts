@@ -3,22 +3,30 @@ import api from '../index'
 export default {
   // 登录
   login: (data: {
-    account: string
+    username: string
     password: string
-  }) => api.post('user/login', data, {
-    baseURL: '/mock/',
-  }),
+    code: string
+    uuid: string
+  }) => api.post('user/login', data),
 
-  // 获取权限
-  permission: () => api.get('user/permission', {
-    baseURL: '/mock/',
-  }),
+  register: (data: {
+    username: string
+    password: string
+    code: string
+    uuid: string
+  }) => api.post('user/register', data),
+
+  information: () => api.get('/user/get', { headers: {} }),
 
   // 修改密码
   passwordEdit: (data: {
     password: string
-    newpassword: string
-  }) => api.post('user/password/edit', data, {
-    baseURL: '/mock/',
-  }),
+    newPassword: string
+    checkPassword: string
+  }) => api.post('user/updatePassword', data, { headers: {} }),
+  captcha: () => api.get('user/captcha'),
+
+  uploadInformation: (data: any) => {
+    return api.post('user/update', data, { headers: {} })
+  },
 }

@@ -1,9 +1,5 @@
 <script setup lang="ts">
-// @ts-expect-error : data: string
 import QrCode from 'qrcode'
-
-// @ts-expect-error : data: string
-import type { QRCodeToDataURLOptions } from 'qrcode'
 
 type DoneFn = (cancel?: boolean) => void
 type handleBeforeFn = (done: DoneFn) => void

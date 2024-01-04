@@ -17,7 +17,7 @@ const props = withDefaults(
     width?: number
     height?: number
     placeholder?: string
-    notip?: boolean
+    noTip?: boolean
     ext?: string[]
   }>(),
   {
@@ -27,7 +27,7 @@ const props = withDefaults(
     width: 150,
     height: 150,
     placeholder: '',
-    notip: false,
+    noTip: false,
     ext: () => ['jpg', 'png', 'gif', 'bmp'],
   },
 )
@@ -126,7 +126,7 @@ const onSuccess: UploadProps['onSuccess'] = (res) => {
         <el-progress type="circle" :width="Math.min(width, height) * 0.8" :percentage="uploadData.progress.percent" />
       </div>
     </el-upload>
-    <div v-if="!notip" class="el-upload__tip">
+    <div v-if="!noTip" class="el-upload__tip">
       <div style="display: inline-block;">
         <el-alert :title="`上传图片支持 ${ext.join(' / ')} 格式，且图片大小不超过 ${size}MB，建议图片尺寸为 ${width}*${height}`" type="info" show-icon :closable="false" />
       </div>

@@ -3,33 +3,55 @@ name: personalSetting
 meta:
   title: 个人设置
   cache: personal-edit.password
-</route>
+    </route>
 
 <script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
+import useUserStore from '@/store/modules/user'
+import userApi from '@/api/modules/user'
+import { GENDERS_DICT } from '@/utils/dictionary'
 
 defineOptions({
   name: 'PersonalSetting',
 })
 
 const router = useRouter()
-
-const form = ref({
-  headimg: '',
-  mobile: '',
-  name: '',
-  qq: '',
-  wechat: '',
+const userStore = useUserStore()
+const token = computed(() => userStore.token)
+const actionURL = computed(() => import.meta.env.VITE_OPEN_PROXY === 'true' ? `/proxy${import.meta.env.VITE_APP_UPLOAD_IMAGE}` : import.meta.env.VITE_APP_UPLOAD_IMAGE)
+const baseInfoFormRef = ref<FormInstance>()
+const form = ref({ ...userStore.information })
+const formRules = ref<FormRules>({
+  phone: [
+    { required: true, message: '请输入你的手机号', trigger: 'blur' },
+    { pattern: /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/, message: '请输入正确的手机号', trigger: 'blur' },
+  ],
+  email: [
+    { required: true, message: '请输入你的邮箱', trigger: 'blur' },
+    { type: 'email', message: '请输入正确的邮箱', trigger: 'blur' },
+  ],
 })
 
 function handleSuccess(res: any) {
-  if (res.error === '') {
-    form.value.headimg = res.data.path
+  if (res.data) {
+    form.value.avatar = res.data.url
   }
   else {
     ElMessage.warning(res.error)
   }
 }
+function handleSaveBaseInformation() {
+  baseInfoFormRef.value && baseInfoFormRef.value.validate((valid) => {
+    if (valid) {
+      userApi.uploadInformation(form.value).then((res: any) => {
+        ElMessage.success(res.message)
+        userStore.information = form.value
+      })
+    }
+  })
+}
+
 function editPassword() {
   router.push({
     name: 'personalEditPassword',
@@ -45,28 +67,30 @@ function editPassword() {
           <h2>基本设置</h2>
           <el-row :gutter="20">
             <el-col :span="16">
-              <el-form :model="form" label-width="120px" label-suffix="：">
-                <el-form-item label="名 称">
-                  <el-input v-model="form.name" placeholder="请输入你的名称" />
+              <el-form ref="baseInfoFormRef" :model="form" :rules="formRules" label-width="120px" label-suffix=":">
+                <el-form-item label="手机号" prop="phone">
+                  <el-input v-model="form.phone" placeholder="请输入你的手机号" />
                 </el-form-item>
-                <el-form-item label="手机号">
-                  <el-input v-model="form.mobile" placeholder="请输入你的手机号" />
+                <el-form-item label="邮箱" prop="email">
+                  <el-input v-model="form.email" placeholder="请输入你的邮箱" />
                 </el-form-item>
-                <el-form-item label="QQ 号">
-                  <el-input v-model="form.qq" placeholder="请输入你的 QQ 号" />
-                </el-form-item>
-                <el-form-item label="微信号">
-                  <el-input v-model="form.wechat" placeholder="请输入你的微信号" />
+                <el-form-item label="性别" prop="email">
+                  <el-select v-model="form.gender" placeholder="请选择你的性别">
+                    <el-option v-for="item in GENDERS_DICT" :key="item.value" :label="item.label" :value="item.value" />
+                  </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary">
+                  <el-button type="primary" @click="handleSaveBaseInformation">
                     保存
                   </el-button>
                 </el-form-item>
               </el-form>
             </el-col>
             <el-col :span="8">
-              <image-upload v-model:url="form.headimg" action="http://scrm.1daas.com/api/upload/upload" name="image" :data="{ token: 'TKD628431923530324' }" notip class="headimg-upload" @on-success="handleSuccess" />
+              <image-upload
+                v-model:url="form.avatar" :action="actionURL" name="image"
+                :headers="{ Authorization: token }" no-tip class="headimg-upload" @on-success="handleSuccess"
+              />
             </el-col>
           </el-row>
         </el-tab-pane>
@@ -75,47 +99,11 @@ function editPassword() {
           <div class="setting-list">
             <div class="item">
               <div class="content">
-                <div class="title">
-                  账户密码
-                </div>
-                <div class="desc">
-                  当前密码强度：强
-                </div>
+                <div class="title" v-text="'账户密码'" />
+                <div class="desc" v-text="'当前密码强度：强'" />
               </div>
               <div class="action">
-                <el-button type="primary" text @click="editPassword">
-                  修改
-                </el-button>
-              </div>
-            </div>
-            <div class="item">
-              <div class="content">
-                <div class="title">
-                  密保手机
-                </div>
-                <div class="desc">
-                  已绑定手机：187****3441
-                </div>
-              </div>
-              <div class="action">
-                <el-button type="primary" text>
-                  修改
-                </el-button>
-              </div>
-            </div>
-            <div class="item">
-              <div class="content">
-                <div class="title">
-                  备用邮箱
-                </div>
-                <div class="desc">
-                  当前未绑定备用邮箱
-                </div>
-              </div>
-              <div class="action">
-                <el-button type="primary" text>
-                  绑定
-                </el-button>
+                <el-button type="primary" text @click="editPassword" v-text="'修改'" />
               </div>
             </div>
           </div>

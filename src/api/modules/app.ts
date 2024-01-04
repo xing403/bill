@@ -10,4 +10,5 @@ export default {
   menuList: () => api.get('app/menu/list', {
     baseURL: '/mock/',
   }),
+
 }

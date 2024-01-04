@@ -10,6 +10,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import Copyright from '@/layouts/components/Copyright/index.vue'
 import useUserStore from '@/store/modules/user'
+import userApi from '@/api/modules/user'
 
 defineOptions({
   name: 'Login',
@@ -31,52 +32,64 @@ const redirect = ref(route.query.redirect?.toString() ?? '/')
 // 登录
 const loginFormRef = ref<FormInstance>()
 const loginForm = ref({
-  account: localStorage.login_account || '',
+  username: localStorage.login_account || '',
   password: '',
+  code: '',
   remember: !!localStorage.login_account,
 })
+const captchaInfo = ref({
+  uuid: '',
+  img: '',
+})
 const loginRules = ref<FormRules>({
-  account: [
+  username: [
     { required: true, trigger: 'blur', message: '请输入用户名' },
   ],
   password: [
     { required: true, trigger: 'blur', message: '请输入密码' },
     { min: 6, max: 18, trigger: 'blur', message: '密码长度为6到18位' },
   ],
+  code: [
+    { required: true, trigger: 'blur', message: '请输入用户名' },
+  ],
 })
 function handleLogin() {
   loginFormRef.value && loginFormRef.value.validate((valid) => {
     if (valid) {
       loading.value = true
-      userStore.login(loginForm.value).then(() => {
+      userStore.login({
+        ...loginForm.value,
+        uuid: captchaInfo.value.uuid,
+      }).then(() => {
         loading.value = false
         if (loginForm.value.remember) {
-          localStorage.setItem('login_account', loginForm.value.account)
+          localStorage.setItem('login_account', loginForm.value.username)
         }
         else {
           localStorage.removeItem('login_account')
         }
-        router.push(redirect.value)
+        router.replace(redirect.value)
       }).catch(() => {
         loading.value = false
+        handleGetCaptcha()
       })
     }
   })
 }
 
-// 注册
+// // 注册
 const registerFormRef = ref<FormInstance>()
 const registerForm = ref({
-  account: '',
-  captcha: '',
+  username: '',
+  code: '',
   password: '',
   checkPassword: '',
 })
 const registerRules = ref<FormRules>({
-  account: [
+  username: [
     { required: true, trigger: 'blur', message: '请输入用户名' },
   ],
-  captcha: [
+  code: [
     { required: true, trigger: 'blur', message: '请输入验证码' },
   ],
   password: [
@@ -97,54 +110,71 @@ const registerRules = ref<FormRules>({
     },
   ],
 })
+
 function handleRegister() {
-  ElMessage({
-    message: '注册模块仅提供界面演示，无实际功能，需开发者自行扩展',
-    type: 'warning',
-  })
   registerFormRef.value && registerFormRef.value.validate((valid) => {
     if (valid) {
-      // 这里编写业务代码
+      loading.value = true
+      userApi.register({
+        ...registerForm.value,
+        uuid: captchaInfo.value.uuid,
+      }).then((res: any) => {
+        ElMessage.success(res.message)
+        loading.value = false
+        formType.value = 'login'
+        handleGetCaptcha()
+      }).catch(() => {
+        loading.value = false
+        handleGetCaptcha()
+      })
     }
   })
 }
 
-// 重置密码
-const resetFormRef = ref<FormInstance>()
-const resetForm = ref({
-  account: localStorage.login_account || '',
-  captcha: '',
-  newPassword: '',
-})
-const resetRules = ref<FormRules>({
-  account: [
-    { required: true, trigger: 'blur', message: '请输入用户名' },
-  ],
-  captcha: [
-    { required: true, trigger: 'blur', message: '请输入验证码' },
-  ],
-  newPassword: [
-    { required: true, trigger: 'blur', message: '请输入新密码' },
-    { min: 6, max: 18, trigger: 'blur', message: '密码长度为6到18位' },
-  ],
-})
-function handleReset() {
-  ElMessage({
-    message: '重置密码模块仅提供界面演示，无实际功能，需开发者自行扩展',
-    type: 'warning',
-  })
-  resetFormRef.value && resetFormRef.value.validate((valid) => {
-    if (valid) {
-      // 这里编写业务代码
-    }
-  })
-}
+// // 重置密码
+// const resetFormRef = ref<FormInstance>()
+// const resetForm = ref({
+//   account: localStorage.login_account || '',
+//   captcha: '',
+//   newPassword: '',
+// })
+// const resetRules = ref<FormRules>({
+//   account: [
+//     { required: true, trigger: 'blur', message: '请输入用户名' },
+//   ],
+//   captcha: [
+//     { required: true, trigger: 'blur', message: '请输入验证码' },
+//   ],
+//   newPassword: [
+//     { required: true, trigger: 'blur', message: '请输入新密码' },
+//     { min: 6, max: 18, trigger: 'blur', message: '密码长度为6到18位' },
+//   ],
+// })
+// function handleReset() {
+//   ElMessage({
+//     message: '重置密码模块仅提供界面演示，无实际功能，需开发者自行扩展',
+//     type: 'warning',
+//   })
+//   resetFormRef.value && resetFormRef.value.validate((valid) => {
+//     if (valid) {
+//       // 这里编写业务代码
+//     }
+//   })
+// }
 
-function testAccount(account: string) {
-  loginForm.value.account = account
-  loginForm.value.password = '123456'
-  handleLogin()
+function handleGetCaptcha() {
+  userApi.captcha().then((res: any) => {
+    captchaInfo.value.img = `data:image/jpeg;base64,${res.data.img}`
+    captchaInfo.value.uuid = res.data.uuid
+  })
 }
+onMounted(() => {
+  handleGetCaptcha()
+})
+
+watch(formType, () => {
+  handleGetCaptcha()
+})
 </script>
 
 <template>
@@ -155,24 +185,38 @@ function testAccount(account: string) {
         <div class="logo" />
         <img :src="banner" class="banner">
       </div>
-      <el-form v-show="formType === 'login'" ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on">
+      <el-form
+        v-show="formType === 'login'" ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form"
+        autocomplete="on"
+      >
         <div class="title-container">
-          <h3 class="title">
-            欢迎来到 {{ title }} ! 👋🏻
-          </h3>
+          <h3 class="title" v-text="`欢迎来到 ${title} ! 👋🏻`" />
         </div>
         <div>
-          <el-form-item prop="account">
-            <el-input v-model="loginForm.account" placeholder="用户名" text tabindex="1" autocomplete="on">
+          <el-form-item prop="username">
+            <el-input v-model="loginForm.username" placeholder="用户名" text tabindex="1" autocomplete="on">
               <template #prefix>
                 <svg-icon name="ep-user" />
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="loginForm.password" type="password" placeholder="密码" tabindex="2" autocomplete="on" show-password @keyup.enter="handleLogin">
+            <el-input
+              v-model="loginForm.password" type="password" placeholder="密码" tabindex="2" autocomplete="on"
+              show-password
+            >
               <template #prefix>
                 <svg-icon name="ep-lock" />
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="code">
+            <el-input v-model="loginForm.code" placeholder="验证码" tabindex="3" autocomplete="on" class="captcha-code">
+              <template #prefix>
+                <svg-icon name="mdi-application-braces-outline" />
+              </template>
+              <template #append>
+                <el-image :src="captchaInfo.img" fit="fill" @click="handleGetCaptcha" />
               </template>
             </el-input>
           </el-form-item>
@@ -185,7 +229,7 @@ function testAccount(account: string) {
             忘记密码了?
           </el-link>
         </div>
-        <el-button :loading="loading" type="primary" size="large" style="width: 100%;" @click.prevent="handleLogin">
+        <el-button :loading="loading" type="primary" @click.prevent="handleLogin">
           登录
         </el-button>
         <div class="sub-link">
@@ -194,70 +238,71 @@ function testAccount(account: string) {
             创建新帐号
           </el-link>
         </div>
-        <div style="margin-top: 20px; margin-bottom: -20px; text-align: center;">
-          <el-divider>演示账号一键登录</el-divider>
-          <el-button type="primary" size="small" plain @click="testAccount('admin')">
-            admin
-          </el-button>
-          <el-button size="small" plain @click="testAccount('test')">
-            test
-          </el-button>
-        </div>
       </el-form>
-      <el-form v-show="formType === 'register'" ref="registerFormRef" :model="registerForm" :rules="registerRules" class="login-form" auto-complete="on">
+
+      <el-form
+        v-show="formType === 'register'" ref="registerFormRef" :model="registerForm" :rules="registerRules"
+        class="login-form" auto-complete="on"
+      >
         <div class="title-container">
-          <h3 class="title">
-            探索从这里开始! 🚀
-          </h3>
+          <h3 class="title" v-text="'探索从这里开始! 🚀'" />
         </div>
         <div>
-          <el-form-item prop="account">
-            <el-input v-model="registerForm.account" placeholder="用户名" tabindex="1" autocomplete="on">
+          <el-form-item prop="username">
+            <el-input v-model="registerForm.username" placeholder="用户名" tabindex="1" autocomplete="on">
               <template #prefix>
                 <svg-icon name="ep-user" />
               </template>
             </el-input>
           </el-form-item>
-          <el-form-item prop="captcha">
-            <el-input v-model="registerForm.captcha" placeholder="验证码" tabindex="2" autocomplete="on">
+          <el-form-item prop="code">
+            <el-input v-model="registerForm.code" placeholder="验证码" tabindex="2" autocomplete="on" class="captcha-code">
               <template #prefix>
-                <svg-icon name="ep-key" />
+                <svg-icon name="mdi-application-braces-outline" />
               </template>
               <template #append>
-                <el-button>发送验证码</el-button>
+                <el-image :src="captchaInfo.img" fit="fill" @click="handleGetCaptcha" />
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="registerForm.password" type="password" placeholder="密码" tabindex="3" autocomplete="on" show-password>
+            <el-input
+              v-model="registerForm.password" type="password" placeholder="密码" tabindex="3" autocomplete="on"
+              show-password
+            >
               <template #prefix>
                 <svg-icon name="ep-lock" />
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="checkPassword">
-            <el-input v-model="registerForm.checkPassword" type="password" placeholder="确认密码" tabindex="4" autocomplete="on" show-password>
+            <el-input
+              v-model="registerForm.checkPassword" type="password" placeholder="确认密码" tabindex="4"
+              autocomplete="on" show-password
+            >
               <template #prefix>
                 <svg-icon name="ep-lock" />
               </template>
             </el-input>
           </el-form-item>
         </div>
-        <el-button :loading="loading" type="primary" size="large" style="width: 100%; margin-top: 20px;" @click.prevent="handleRegister">
+        <el-button
+          :loading="loading" type="primary" size="large" style="width: 100%; margin-top: 20px;"
+          @click.prevent="handleRegister"
+        >
           注册
         </el-button>
         <div class="sub-link">
-          <span class="text">已经有帐号?</span>
-          <el-link type="primary" :underline="false" @click="formType = 'login'">
-            去登录
-          </el-link>
+          <span class="text" v-text="'已经有帐号?'" />
+          <el-link type="primary" :underline="false" @click="formType = 'login'" v-text="'去登录'" />
         </div>
       </el-form>
-      <el-form v-show="formType === 'reset'" ref="resetFormRef" :model="resetForm" :rules="resetRules" class="login-form" auto-complete="on">
+      <!-- <el-form
+        v-show="formType === 'reset'" ref="resetFormRef" :model="resetForm" :rules="resetRules" class="login-form"
+        auto-complete="on"
+      >
         <div class="title-container">
-          <h3 class="title">
-            忘记密码了? 🔒
-          </h3>
+          <h3 class="title" v-text="'忘记密码了? 🔒'" />
         </div>
         <div>
           <el-form-item prop="account">
@@ -278,14 +323,20 @@ function testAccount(account: string) {
             </el-input>
           </el-form-item>
           <el-form-item prop="newPassword">
-            <el-input v-model="resetForm.newPassword" type="password" placeholder="新密码" tabindex="3" autocomplete="on" show-password>
+            <el-input
+              v-model="resetForm.newPassword" type="password" placeholder="新密码" tabindex="3" autocomplete="on"
+              show-password
+            >
               <template #prefix>
                 <svg-icon name="ep-lock" />
               </template>
             </el-input>
           </el-form-item>
         </div>
-        <el-button :loading="loading" type="primary" size="large" style="width: 100%; margin-top: 20px;" @click.prevent="handleReset">
+        <el-button
+          :loading="loading" type="primary" size="large" style="width: 100%; margin-top: 20px;"
+          @click.prevent="handleReset"
+        >
           确认
         </el-button>
         <div class="sub-link">
@@ -293,7 +344,7 @@ function testAccount(account: string) {
             返回登录
           </el-link>
         </div>
-      </el-form>
+      </el-form> -->
     </div>
     <Copyright />
   </div>
@@ -408,6 +459,7 @@ function testAccount(account: string) {
         font-size: 1.3em;
         color: var(--el-text-color-primary);
         margin: 0 auto 30px;
+        text-align: center;
         font-weight: bold;
       }
     }
@@ -437,6 +489,14 @@ function testAccount(account: string) {
 
       .el-input__suffix {
         right: 10px;
+      }
+
+      &.captcha-code .el-input-group__append {
+        padding: 3px;
+
+        .el-image {
+          cursor: pointer;
+        }
       }
     }
   }
