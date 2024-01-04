@@ -266,3 +266,17 @@ declare namespace Menu {
     children: recordRaw[]
   }
 }
+
+declare namespace HTTPResponse {
+  export interface success<T> {
+    code: number
+    message: string
+    data: T
+  }
+
+  export interface error {
+    code: number
+    message: string
+    data: any
+  }
+}
