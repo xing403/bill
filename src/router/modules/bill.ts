@@ -8,23 +8,23 @@ const routes: RouteRecordRaw = {
   name: 'bill',
   meta: {
     title: '账单管理',
-    icon: 'ep:box',
+    icon: 'ep:list',
   },
   children: [{
-    path: 'list',
-    name: 'bill-list',
-    component: () => import('@/views/bill/list.vue'),
-    meta: {
-      title: '账单列表',
-      icon: 'ep:list',
-    },
-  }, {
     path: 'addition',
     name: 'bill-addition',
     component: () => import('@/views/bill/addition.vue'),
     meta: {
       title: '添加账单',
       icon: 'ep:plus',
+    },
+  }, {
+    path: 'list',
+    name: 'bill-list',
+    component: () => import('@/views/bill/list.vue'),
+    meta: {
+      title: '账单列表',
+      icon: 'ep:list',
     },
   }, {
     path: 'edit/:id',
@@ -34,6 +34,17 @@ const routes: RouteRecordRaw = {
     meta: {
       title: '修改账单',
       icon: 'ep:edit',
+      sidebar: false,
+    },
+  }, {
+    path: 'detail/:id',
+    name: 'bill-detail',
+    component: () => import('@/views/bill/detail.vue'),
+    props: true,
+    meta: {
+      title: '账单详情',
+      icon: 'ep:list',
+      sidebar: false,
     },
   }],
 }

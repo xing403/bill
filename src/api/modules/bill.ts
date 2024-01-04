@@ -7,4 +7,5 @@ export default {
   getById: (data: { id: number }): Promise<HTTPResponse.success<Bill.IBillType>> => api.post('/bill/getById', data, { headers: { format: true } }),
 
   update: (data: Bill.IBillType) => api.post('/bill/update', data, { headers: {} }),
+  delete: (data: { id: number }) => api.post('/bill/delete', data, { headers: { format: true } }),
 }

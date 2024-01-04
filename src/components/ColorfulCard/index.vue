@@ -8,13 +8,14 @@ const props = withDefaults(defineProps<{
   gradientStart?: string
   gradientEnd?: string
   gradientAngle?: number | string
+  disableColor?: boolean
 }>(), {
   gradientStart: '#736efe',
   gradientEnd: '#5efce8',
   gradientAngle: 135,
+  disableColor: false,
 })
-const background = ref()
-background.value = `linear-gradient(${props.gradientAngle}deg, ${props.gradientStart}, ${props.gradientEnd})`
+const background = computed(() => props.disableColor ? 'none' : `linear-gradient(${props.gradientAngle}deg, ${props.gradientStart}, ${props.gradientEnd})`)
 </script>
 
 <template>
@@ -42,12 +43,12 @@ background.value = `linear-gradient(${props.gradientAngle}deg, ${props.gradientS
   top: 0;
 }
 
-::v-deep .el-card__header {
+:deep(.el-card__header) {
   color: #fff;
   border-bottom: 0;
 }
 
-::v-deep .el-card__body {
+:deep(.el-card__body) {
   color: #fff;
 }
 
