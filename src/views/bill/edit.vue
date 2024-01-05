@@ -132,7 +132,7 @@ function handleGoBackRoute() {
           />
           <el-button v-else class="button-new-tag ml-1" @click="showInput" v-text="'新标签'" />
         </el-form-item>
-        <el-form-item prop="detail">
+        <el-form-item label="详细信息" prop="detail">
           <el-input
             v-model="bill.detail" type="textarea" placeholder="请输入备注信息" clearable w-full
             :autosize="{ minRows: 3, maxRows: 5 }" tabindex="6"

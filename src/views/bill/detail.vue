@@ -64,10 +64,10 @@ function handleDeleteBill() {
       ElMessage.success(res.message)
       router.replace({ name: 'bill-list' })
     })
-  })
+  }).catch(() => { })
 }
 function handleGoBackRoute() {
-  router.replace({ name: 'bill-list' })
+  router.back()
 }
 </script>
 
@@ -103,7 +103,7 @@ function handleGoBackRoute() {
             {{ tag }}
           </el-tag>
         </el-form-item>
-        <el-form-item prop="detail">
+        <el-form-item label="详细信息" prop="detail">
           <el-input
             v-model="bill.detail" type="textarea" placeholder="请输入备注信息" clearable w-full
             :autosize="{ minRows: 3, maxRows: 5 }" tabindex="6" disabled
