@@ -9,7 +9,10 @@ meta:
 <script setup lang="ts">
 const router = useRouter()
 
-const data = ref({
+const data = ref<{
+  inter: any
+  countdown: number
+}>({
   inter: Number.NaN,
   countdown: 5,
 })

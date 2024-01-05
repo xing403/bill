@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Action, FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { BILL_TYPE_DICT } from '@/utils/dictionary'
 

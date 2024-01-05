@@ -43,11 +43,11 @@ function drawChartByMonthDay() {
         name: '收入(元)',
         position: 'left',
         axisLabel: { formatter: (money: number) => formatMoney(money) },
-        min: (value: number) => {
+        min: () => {
           const minValue = Math.min.apply(null, incomeAndExpenseByMonth.value.map((item: any) => item!.income ?? 0))
           return minValue - (minValue * 0.1)
         },
-        max(value: number) {
+        max() {
           const maxValue = Math.max.apply(null, incomeAndExpenseByMonth.value.map((item: any) => item!.income ?? 0))
           return maxValue + (maxValue * 0.1)
         },
@@ -58,11 +58,11 @@ function drawChartByMonthDay() {
         name: '支出(元)',
         position: 'right',
         axisLabel: { formatter: (money: number) => formatMoney(money) },
-        min: (value: number) => {
+        min: () => {
           const minValue = Math.min.apply(null, incomeAndExpenseByMonth.value.map((item: any) => item!.expense ?? 0))
           return minValue - (minValue * 0.1)
         },
-        max(value: number) {
+        max: () => {
           const maxValue = Math.max.apply(null, incomeAndExpenseByMonth.value.map((item: any) => item!.expense ?? 0))
           return maxValue + (maxValue * 0.1)
         },
