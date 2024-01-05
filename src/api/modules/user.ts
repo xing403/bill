@@ -29,4 +29,7 @@ export default {
   uploadInformation: (data: any) => {
     return api.post('user/update', data, { headers: {} })
   },
+
+  deleteUser: (data: any) => api.post('/api/user/delete', data, { headers: {} }),
+  getlistByUser: (data: any) => api.post('user/list', data, { headers: { format: true } }),
 }
