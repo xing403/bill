@@ -9,7 +9,10 @@ meta:
 <script setup lang="ts">
 const router = useRouter()
 
-const data = ref({
+const data = ref<{
+  inter: any
+  countdown: number
+}>({
   inter: Number.NaN,
   countdown: 5,
 })
@@ -35,7 +38,7 @@ function goBack() {
 
 <template>
   <div class="notfound">
-    <svg-icon name="404" class="icon" />
+    <svg-icon name="404" class="icon" size="400px" />
     <div class="content">
       <h1>404</h1>
       <div class="desc">

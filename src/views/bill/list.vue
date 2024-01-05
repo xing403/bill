@@ -29,7 +29,7 @@ function getList(refresh: boolean = false) {
       bill.updateTime = dayjs(bill.updateTime).format('YYYY-MM-DD HH:mm:ss')
       bill.dataTime = dayjs(bill.dataTime).format('YYYY-MM-DD')
       if (typeof bill.tags === 'string') {
-        bill.tags = bill.tags.split(',').filter((tag: string) => tag !== '')
+        bill.tags = bill.tags.split(',').filter(tag => tag !== '')
       }
       return bill
     })
@@ -64,7 +64,7 @@ watch(isNoMore, (value) => {
           <template #header>
             <div class="card-header" flex="~ row gap-1 items-center justify-between">
               <div flex="~ col gap-1 items-center" text-left>
-                <el-link :href="`#/bill/edit/${item.id}`" class="bill-title" :underline="false" v-text="item.title" />
+                <el-link :href="`#/bill/detail/${item.id}`" class="bill-title" :underline="false" v-text="item.title" />
                 <span class="text-secondary" text-xs v-text="item.dataTime" />
               </div>
               <span text-2xl v-text="`${item.type === 2 ? '-' : '+'}${item.amount}`" />
@@ -109,7 +109,7 @@ watch(isNoMore, (value) => {
   }
 }
 
-::v-deep .bill-title.el-link {
+:deep(.bill-title.el-link) {
   font-size: 1.5em;
   font-weight: 600;
 }

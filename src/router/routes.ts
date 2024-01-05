@@ -75,8 +75,8 @@ const asyncRoutes: Route.recordMainRaw[] = [{
   children: [
     BillRoute,
   ],
-},
-]
+}]
+
 const constantRoutesByFilesystem = generatedRoutes.filter((item) => {
   return item.meta?.enabled !== false && item.meta?.constant === true
 })
