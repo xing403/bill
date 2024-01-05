@@ -10,4 +10,5 @@ export default {
   delete: (data: { id: number }) => api.post('/bill/delete', data, { headers: { format: true } }),
   information: () => api.get('/bill/information', { headers: {} }),
   incomeAndExpenseByMonth: (data: { dataTime: string }) => api.post('/bill/incomeAndExpenseByMonth', data, { headers: { format: true } }),
+  incomeAndExpenseByYear: (data: { dataTime: string }) => api.post('/bill/incomeAndExpenseByYear', data, { headers: { format: true } }),
 }

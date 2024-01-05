@@ -17,6 +17,7 @@ declare module 'vue' {
     ImagesUpload: typeof import('./../components/ImagesUpload/index.vue')['default']
     ImageUpload: typeof import('./../components/ImageUpload/index.vue')['default']
     IncomeAndExpenseByMonth: typeof import('./../components/Statistics/IncomeAndExpenseByMonth.vue')['default']
+    IncomeAndExpenseByYear: typeof import('./../components/Statistics/IncomeAndExpenseByYear.vue')['default']
     NotAllowed: typeof import('./../components/NotAllowed/index.vue')['default']
     PageHeader: typeof import('./../components/PageHeader/index.vue')['default']
     PageMain: typeof import('./../components/PageMain/index.vue')['default']

@@ -5,7 +5,6 @@ meta:
 </route>
 
 <script setup lang="ts">
-import { dayjs } from 'element-plus'
 import billApi from '@/api/modules/bill'
 
 const information = ref({
@@ -81,6 +80,9 @@ onMounted(() => {
     <el-row>
       <el-col :xs="24" :sm="12">
         <income-and-expense-by-month />
+      </el-col>
+      <el-col :xs="24" :sm="12">
+        <income-and-expense-by-year />
       </el-col>
     </el-row>
   </div>
