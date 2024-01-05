@@ -33,10 +33,10 @@ const globalSettings: Settings.all = {
   },
   copyright: {
     enable: true,
-    dates: '',
-    company: '',
-    website: '',
-    beian: '',
+    dates: '2023',
+    company: '星如雨',
+    website: '//ilstudy.vip',
+    beian: '豫ICP备2021004680号-1',
   },
   home: {
     enable: true,

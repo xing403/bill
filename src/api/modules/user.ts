@@ -1,4 +1,5 @@
 import api from '../index'
+import type { HTTPResponse } from '@/types/global'
 
 export default {
   // 登录
@@ -16,8 +17,6 @@ export default {
     uuid: string
   }) => api.post('user/register', data),
 
-  information: () => api.get('/user/get', { headers: {} }),
-
   // 修改密码
   passwordEdit: (data: {
     password: string
@@ -26,10 +25,14 @@ export default {
   }) => api.post('user/updatePassword', data, { headers: {} }),
   captcha: () => api.get('user/captcha'),
 
-  uploadInformation: (data: any) => {
-    return api.post('user/update', data, { headers: {} })
-  },
+  // 当前登录用户的信息
+  information: (): Promise<HTTPResponse.success<User.IUserType>> => api.get('/user/get', { headers: {} }),
 
-  deleteUser: (data: any) => api.post('/api/user/delete', data, { headers: {} }),
-  getlistByUser: (data: any) => api.post('user/list', data, { headers: { format: true } }),
+  uploadInformation: (data: any): Promise<HTTPResponse.success<User.IUserType>> => api.post('user/update', data, { headers: {} }),
+
+  deleteUser: (data: any) => api.post('/user/delete', data, { headers: { format: true } }),
+  // 用户列表
+  getlistByUser: (data: any): Promise<HTTPResponse.success<User.IUserState>> => api.post('user/list', data, { headers: { format: true } }),
+  // 其他用户用户信息
+  getUser: (data: any): Promise<HTTPResponse.success<User.IUserType>> => api.post('user/getUser', data, { headers: { format: true } }),
 }

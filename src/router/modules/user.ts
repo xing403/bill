@@ -9,6 +9,7 @@ const routes: RouteRecordRaw = {
   meta: {
     title: '用户管理',
     icon: 'ep:user',
+    auth: ['admin', 'root'],
   },
   children: [{
     path: 'list',
@@ -17,26 +18,6 @@ const routes: RouteRecordRaw = {
     meta: {
       title: '用户列表',
       icon: 'ep:list',
-    },
-  }, {
-    path: 'edit/:id',
-    name: 'user-edit',
-    component: () => import('@/views/bill/edit.vue'),
-    props: true,
-    meta: {
-      title: '修改用户',
-      icon: 'ep:edit',
-      sidebar: false,
-    },
-  }, {
-    path: 'detail/:id',
-    name: 'user-detail',
-    component: () => import('@/views/bill/detail.vue'),
-    props: true,
-    meta: {
-      title: '用户详情',
-      icon: 'ep:list',
-      sidebar: false,
     },
   }],
 }

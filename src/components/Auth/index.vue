@@ -15,6 +15,6 @@ function check() {
 <template>
   <div>
     <slot v-if="check()" />
-    <slot v-else name="no-auth" />
+    <slot v-else name="no-auth" size="400px" />
   </div>
 </template>

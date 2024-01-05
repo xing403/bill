@@ -2,8 +2,12 @@
 import { ElMessage } from 'element-plus'
 import userApi from '@/api/modules/user'
 import { formatGender, formatIdentity, formatTime, formatUserStatus, formatYesOrNo } from '@/utils/transition'
+import { IDENTITY_ARR_DICT, IDENTITY_ARR_TAG_DICT } from '@/utils/dictionary'
+import type { HTTPResponse } from '@/types/global'
+import useUserStore from '@/store/modules/user'
 
-const users = ref([])
+const userStore = useUserStore()
+const users = ref<User.IUserType[]>([])
 const page = ref(1)
 const pageSize = ref(20)
 const total = ref(0)
@@ -28,11 +32,11 @@ function handleFormatYesOrNo(row: any, column: any) {
 function formatStatus(row: any, column: any) {
   return formatUserStatus(row[column.property])
 }
-function hasPermission(auth: string) {
-  return true
+function hasPermission(auth_key: string) {
+  return IDENTITY_ARR_DICT.indexOf(auth_key) < IDENTITY_ARR_DICT.indexOf(userStore.information?.auth ?? 'user')
 }
 function handleGetList() {
-  userApi.getlistByUser({ page: page.value, pageSize: pageSize.value }).then((res: any) => {
+  userApi.getlistByUser({ page: page.value, pageSize: pageSize.value }).then((res: HTTPResponse.success<User.IUserState>) => {
     users.value = res.data.list
     total.value = res.data.total
   })
@@ -50,6 +54,13 @@ function handleEditUser(user: any) {
 function handleDetailUser(user: any) {
   detailDialog.value = true
   detailUser.value = { ...user }
+}
+function handleAfterReloadList(val: boolean) {
+  editDialog.value = false
+  detailDialog.value = false
+  if (val) {
+    handleGetList()
+  }
 }
 onMounted(() => {
   handleGetList()
@@ -69,15 +80,7 @@ onMounted(() => {
         <el-table-column prop="auth" label="账号身份" width="180" align="center">
           <template #default="{ row, column }">
             <el-tag
-              v-if="row[column.property] === 'root'" type="danger" size="small"
-              v-text="handleFormatIdentity(row, column)"
-            />
-            <el-tag
-              v-else-if="row[column.property] === 'admin'" type="warning" size="small"
-              v-text="handleFormatIdentity(row, column)"
-            />
-            <el-tag
-              v-else-if="row[column.property] === 'user'" type="" size="small"
+              :type="IDENTITY_ARR_TAG_DICT[IDENTITY_ARR_DICT.indexOf(row[column.property])]"
               v-text="handleFormatIdentity(row, column)"
             />
           </template>
@@ -106,6 +109,23 @@ onMounted(() => {
           </template>
         </el-table-column>
       </el-table>
+      <div flex="~ row justify-end items-center gap-1" p-5 empty-hidden>
+        <el-pagination
+          v-model:current-page="page" v-model:page-size="pageSize" hide-on-single-page
+          :page-sizes="[10, 20, 50]" background layout="prev, pager, next, pager,total" :total="total"
+          @size-change="handleGetList" @current-change="handleGetList"
+        />
+      </div>
     </page-main>
+
+    <el-dialog v-model="editDialog" title="编辑用户" destroy-on-close>
+      <user-component
+        v-model:user="editUser" :disabled="false" @edit="handleAfterReloadList"
+        @cancel="handleAfterReloadList"
+      />
+    </el-dialog>
+    <el-dialog v-model="detailDialog" title="用户详情" destroy-on-close>
+      <user-component v-model:user="detailUser" />
+    </el-dialog>
   </div>
 </template>

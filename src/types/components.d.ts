@@ -10,6 +10,8 @@ declare module 'vue' {
     Auth: typeof import('./../components/Auth/index.vue')['default']
     AuthAll: typeof import('./../components/AuthAll/index.vue')['default']
     ColorfulCard: typeof import('./../components/ColorfulCard/index.vue')['default']
+    Detail: typeof import('./../components/User/detail.vue')['default']
+    Edit: typeof import('./../components/User/edit.vue')['default']
     FileUpload: typeof import('./../components/FileUpload/index.vue')['default']
     FixedActionBar: typeof import('./../components/FixedActionBar/index.vue')['default']
     IconTag: typeof import('./../components/IconTag/index.vue')['default']
@@ -22,12 +24,13 @@ declare module 'vue' {
     PageHeader: typeof import('./../components/PageHeader/index.vue')['default']
     PageMain: typeof import('./../components/PageMain/index.vue')['default']
     PcasCascader: typeof import('./../components/PcasCascader/index.vue')['default']
-    QrCode: typeof import('./../components/QrCode/index.vue')['default']
+    QRCode: typeof import('./../components/QRCode/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./../components/SearchBar/index.vue')['default']
     SvgIcon: typeof import('./../components/SvgIcon/index.vue')['default']
     SystemInfo: typeof import('./../components/SystemInfo/index.vue')['default']
     Trend: typeof import('./../components/Trend/index.vue')['default']
+    UserComponent: typeof import('./../components/User/UserComponent.vue')['default']
   }
 }
