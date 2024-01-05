@@ -2,6 +2,7 @@ import { setupLayouts } from 'virtual:meta-layouts'
 import generatedRoutes from 'virtual:generated-pages'
 import type { RouteRecordRaw } from 'vue-router'
 import BillRoute from './modules/bill'
+import UserRoute from './modules/user'
 import type { Route } from '#/global'
 import useSettingsStore from '@/store/modules/settings'
 
@@ -74,6 +75,14 @@ const asyncRoutes: Route.recordMainRaw[] = [{
   },
   children: [
     BillRoute,
+  ],
+}, {
+  meta: {
+    title: '管理',
+    icon: 'ep:user',
+  },
+  children: [
+    UserRoute,
   ],
 }]
 

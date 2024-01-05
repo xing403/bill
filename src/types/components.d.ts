@@ -23,7 +23,6 @@ declare module 'vue' {
     PageMain: typeof import('./../components/PageMain/index.vue')['default']
     PcasCascader: typeof import('./../components/PcasCascader/index.vue')['default']
     QrCode: typeof import('./../components/QrCode/index.vue')['default']
-    QRCode: typeof import('./../components/QRCode/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./../components/SearchBar/index.vue')['default']

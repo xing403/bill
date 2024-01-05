@@ -1,3 +1,9 @@
+import { GENDER_DICT, IDENTITY_DICT, STATUS_DICT, YES_NO_DICT } from '@/utils/dictionary'
+import dayjs from '@/utils/dayjs'
+
+export function formatTime(date: string, format = 'YYYY-MM-DD HH:mm:ss') {
+  return dayjs(date).format(format)
+}
 export function formatMoney(money: number) {
   if (money < 10000) {
     return money.toFixed(2)
@@ -19,4 +25,17 @@ export function formatMonth(month: number) {
   else {
     return `${month}月`
   }
+}
+export function formatGender(key: number | string) {
+  return GENDER_DICT[key]
+}
+export function formatIdentity(key: number | string) {
+  return IDENTITY_DICT[key]
+}
+
+export function formatYesOrNo(key: number | string) {
+  return YES_NO_DICT[key]
+}
+export function formatUserStatus(key: number | string) {
+  return STATUS_DICT[key]
 }
