@@ -9,4 +9,5 @@ export default {
   update: (data: Bill.IBillType) => api.post('/bill/update', data, { headers: {} }),
   delete: (data: { id: number }) => api.post('/bill/delete', data, { headers: { format: true } }),
   information: () => api.get('/bill/information', { headers: {} }),
+  incomeAndExpenseByMonth: (data: { dataTime: string }) => api.post('/bill/incomeAndExpenseByMonth', data, { headers: { format: true } }),
 }

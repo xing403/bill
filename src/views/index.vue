@@ -5,6 +5,7 @@ meta:
 </route>
 
 <script setup lang="ts">
+import { dayjs } from 'element-plus'
 import billApi from '@/api/modules/bill'
 
 const information = ref({
@@ -16,7 +17,6 @@ const information = ref({
   lBillIncome: 0,
   lBillExpense: 0,
 })
-
 onMounted(() => {
   billApi.information().then((res: any) => {
     information.value = res.data
@@ -40,7 +40,10 @@ onMounted(() => {
           </colorful-card>
         </el-col>
         <el-col :xs="24" :sm="8">
-          <colorful-card title="收入总额" icon="mdi:checkbox-multiple-blank-circle-outline" gradient-start="#96f2ff" gradient-end="#ce9ffc">
+          <colorful-card
+            title="收入总额" icon="mdi:checkbox-multiple-blank-circle-outline" gradient-start="#96f2ff"
+            gradient-end="#ce9ffc"
+          >
             <div text-1.5em v-text="information.cBillIncome" />
             <template #footer>
               <div flex="~ row items-center gap-1" text-1em>
@@ -54,7 +57,10 @@ onMounted(() => {
           </colorful-card>
         </el-col>
         <el-col :xs="24" :sm="8">
-          <colorful-card title="支出总额" icon="mdi:checkbox-multiple-marked-outline" gradient-start="#96f2ff" gradient-end="#ce9ffc">
+          <colorful-card
+            title="支出总额" icon="mdi:checkbox-multiple-marked-outline" gradient-start="#96f2ff"
+            gradient-end="#ce9ffc"
+          >
             <div text-1.5em>
               {{ information.cBillExpense }}
             </div>
@@ -71,5 +77,11 @@ onMounted(() => {
         </el-col>
       </el-row>
     </page-main>
+
+    <el-row>
+      <el-col :xs="24" :sm="12">
+        <income-and-expense-by-month />
+      </el-col>
+    </el-row>
   </div>
 </template>

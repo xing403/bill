@@ -48,7 +48,7 @@ function unCollaspe() {
 <style lang="scss" scoped>
 .page-main {
   position: relative;
-  margin: 20px;
+  margin: 10px 20px;
   padding: 20px;
   background-color: var(--g-app-bg);
   transition: background-color 0.3s;
