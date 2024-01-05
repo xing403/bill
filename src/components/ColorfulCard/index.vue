@@ -1,32 +1,58 @@
 <script setup lang="ts">
+import { useSlots } from 'vue'
+
 defineOptions({
   name: 'ColorfulCard',
 })
 const props = withDefaults(defineProps<{
   icon?: string
   title?: string
+  footer?: string
   gradientStart?: string
   gradientEnd?: string
+  gradientColors?: string[]
   gradientAngle?: number | string
   disableColor?: boolean
 }>(), {
   gradientStart: '#736efe',
   gradientEnd: '#5efce8',
+  gradientColors: () => [],
   gradientAngle: 135,
   disableColor: false,
 })
-const background = computed(() => props.disableColor ? 'none' : `linear-gradient(${props.gradientAngle}deg, ${props.gradientStart}, ${props.gradientEnd})`)
+
+const slots = useSlots()
+
+const background = computed(() => {
+  if (props.disableColor) {
+    return 'none'
+  }
+  else if (props.gradientColors.length > 0) {
+    return `linear-gradient(${props.gradientAngle}deg, ${props.gradientColors.join(',')})`
+  }
+  else {
+    return `linear-gradient(${props.gradientAngle}deg, ${props.gradientStart}, ${props.gradientEnd})`
+  }
+})
 </script>
 
 <template>
   <el-card :style="{ background }" class="card">
     <template #header>
-      <template v-if="props.title">
-        {{ title }}
-      </template>
-      <slot v-else name="title" />
+      <slot v-if="slots.title" />
+      <div v-else class="card-title" v-text="props.title" />
     </template>
-    <slot name="default" />
+
+    <slot />
+
+    <template v-if="props.footer || slots.footer" #footer>
+      <slot name="footer">
+        <div class="card-footer">
+          <component :is="props.footer" v-if="props.footer" />
+        </div>
+      </slot>
+    </template>
+
     <svg-icon v-if="props.icon" class="icon" color="#FFF" :rotate="20" :name="props.icon" />
   </el-card>
 </template>
@@ -43,13 +69,20 @@ const background = computed(() => props.disableColor ? 'none' : `linear-gradient
   top: 0;
 }
 
-:deep(.el-card__header) {
+:deep(.el-card__header),
+:deep(.el-card__footer) {
   color: #fff;
   border-bottom: 0;
+  border-top: 0;
 }
 
 :deep(.el-card__body) {
   color: #fff;
+  padding-top: 5px;
+}
+
+:deep(.el-card__footer) {
+  padding-top: 0;
 }
 
 .icon {

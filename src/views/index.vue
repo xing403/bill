@@ -27,42 +27,46 @@ onMounted(() => {
 <template>
   <div>
     <page-main>
-      <el-row :gutter="20">
+      <el-row :gutter="10">
         <el-col :xs="24" :sm="8">
-          <colorful-card title="账单总数" icon="ep:list">
-            <div text-1.5em>
-              {{ information.billCount }}
-            </div>
-            <div flex="` row items-center" text-1em>
-              <span>当前月 支出/收入</span>
-              <span>{{ information.cBillCount }}</span>
-            </div>
+          <colorful-card title="账单总数" icon="ep:list" gradient-start="#ce9ffc" gradient-end="#96f2ff">
+            <div text-1.5em v-text="information.billCount" />
+            <template #footer>
+              <div flex="~ row items-center" text-1em>
+                <span>当前月 支出/收入</span>
+                <span>{{ information.cBillCount }}</span>
+              </div>
+            </template>
           </colorful-card>
         </el-col>
         <el-col :xs="24" :sm="8">
-          <colorful-card title="收入总额" icon="mdi:checkbox-multiple-blank-circle-outline">
-            <div text-1.5em>
-              {{ information.cBillIncome }}
-            </div>
-            <div flex="` row items-center" text-1em>
-              <span>与上月相比</span>
-              <svg-icon v-if="information.cBillIncome - information.lBillIncome > 0" name="mdi:arrow-up-thick" />
-              <svg-icon v-else-if="information.cBillIncome - information.lBillIncome < 0" name="mdi:arrow-down-thick" />
-              <span>{{ Math.abs((information.cBillIncome - information.lBillIncome)).toFixed(2) }}</span>
-            </div>
+          <colorful-card title="收入总额" icon="mdi:checkbox-multiple-blank-circle-outline" gradient-start="#96f2ff" gradient-end="#ce9ffc">
+            <div text-1.5em v-text="information.cBillIncome" />
+            <template #footer>
+              <div flex="~ row items-center gap-1" text-1em>
+                <span>与上月相比</span>
+                <trend
+                  :value="Math.abs((information.cBillIncome - information.lBillIncome)).toFixed(2)"
+                  :type="information.cBillIncome - information.lBillIncome >= 0 ? 'up' : 'down'"
+                />
+              </div>
+            </template>
           </colorful-card>
         </el-col>
         <el-col :xs="24" :sm="8">
-          <colorful-card title="支出总额" icon="mdi:checkbox-multiple-marked-outline">
+          <colorful-card title="支出总额" icon="mdi:checkbox-multiple-marked-outline" gradient-start="#96f2ff" gradient-end="#ce9ffc">
             <div text-1.5em>
               {{ information.cBillExpense }}
             </div>
-            <div flex="` row items-center" text-1em>
-              <span>与上月相比</span>
-              <svg-icon v-if="information.cBillExpense - information.lBillExpense > 0" name="mdi:arrow-up-thick" color="#F56C6C" />
-              <svg-icon v-else-if="information.cBillExpense - information.lBillExpense < 0" name="mdi:arrow-down-thick" color="#67C23A" />
-              <span>{{ Math.abs((information.cBillExpense - information.lBillExpense)).toFixed(2) }}</span>
-            </div>
+            <template #footer>
+              <div flex="~ row items-center gap-1" text-1em>
+                <span>与上月相比</span>
+                <trend
+                  :value="Math.abs((information.cBillExpense - information.lBillExpense)).toFixed(2)"
+                  :type="information.cBillExpense - information.lBillExpense >= 0 ? 'up' : 'down'"
+                />
+              </div>
+            </template>
           </colorful-card>
         </el-col>
       </el-row>
