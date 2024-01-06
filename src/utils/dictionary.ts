@@ -1,3 +1,5 @@
+type TagType = '' | 'success' | 'warning' | 'info' | 'danger'
+
 export const GENDERS_DICT = [
   { label: '男', value: '1' },
   { label: '女', value: '0' },
@@ -24,7 +26,7 @@ export const IDENTITY_DICT: {
   user: '普通用户',
 }
 export const IDENTITY_ARR_DICT = ['user', 'admin', 'root']
-
+export const IDENTITY_ARR_TAG_DICT: TagType[] = ['', 'warning', 'danger']
 export const YES_NO_DICT: {
   [key: number | string]: string
 } = {

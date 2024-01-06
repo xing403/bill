@@ -46,7 +46,7 @@ function handleSaveBaseInformation() {
     if (valid) {
       userApi.uploadInformation(form.value).then((res: any) => {
         ElMessage.success(res.message)
-        userStore.information = form.value
+        userStore.getPermissions()
       })
     }
   })

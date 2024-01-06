@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useNProgress } from '@vueuse/integrations/useNProgress'
+import { ElMessage } from 'element-plus'
 import '@/assets/styles/nprogress.scss'
 
 // 路由相关数据
@@ -35,6 +36,13 @@ router.beforeEach(async (to, from, next) => {
       if (to.name === 'login') {
         next({
           name: 'home',
+          replace: true,
+        })
+      }
+      else if ((userStore.information?.phone == null || userStore.information?.email == null) && to.name !== 'personalSetting') {
+        ElMessage.info('请先绑定邮箱和手机号')
+        next({
+          name: 'personalSetting',
           replace: true,
         })
       }
@@ -140,7 +148,7 @@ router.afterEach((to, from) => {
   if (from.meta.cache) {
     const componentName = from.matched.at(-1)?.components?.default.name
     if (componentName) {
-    // 通过 meta.cache 判断针对哪些页面进行缓存
+      // 通过 meta.cache 判断针对哪些页面进行缓存
       switch (typeof from.meta.cache) {
         case 'string':
           if (from.meta.cache !== to.name) {

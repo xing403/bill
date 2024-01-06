@@ -71,6 +71,7 @@ function handleLogin() {
         router.replace(redirect.value)
       }).catch(() => {
         loading.value = false
+        loginFormRef.value?.resetFields()
         handleGetCaptcha()
       })
     }
@@ -125,42 +126,57 @@ function handleRegister() {
         handleGetCaptcha()
       }).catch(() => {
         loading.value = false
+        registerFormRef.value?.resetFields('code')
         handleGetCaptcha()
       })
     }
   })
 }
 
-// // 重置密码
-// const resetFormRef = ref<FormInstance>()
-// const resetForm = ref({
-//   account: localStorage.login_account || '',
-//   captcha: '',
-//   newPassword: '',
-// })
-// const resetRules = ref<FormRules>({
-//   account: [
-//     { required: true, trigger: 'blur', message: '请输入用户名' },
-//   ],
-//   captcha: [
-//     { required: true, trigger: 'blur', message: '请输入验证码' },
-//   ],
-//   newPassword: [
-//     { required: true, trigger: 'blur', message: '请输入新密码' },
-//     { min: 6, max: 18, trigger: 'blur', message: '密码长度为6到18位' },
-//   ],
-// })
-// function handleReset() {
-//   ElMessage({
-//     message: '重置密码模块仅提供界面演示，无实际功能，需开发者自行扩展',
-//     type: 'warning',
-//   })
-//   resetFormRef.value && resetFormRef.value.validate((valid) => {
-//     if (valid) {
-//       // 这里编写业务代码
-//     }
-//   })
-// }
+// 重置密码
+const resetFormRef = ref<FormInstance>()
+const resetForm = ref({
+  username: localStorage.login_account || '',
+  code: '',
+  check: '',
+  newPassword: '',
+})
+const resetRules = ref<FormRules>({
+  username: [
+    { required: true, trigger: 'blur', message: '请输入用户名' },
+  ],
+  code: [
+    { required: true, trigger: 'blur', message: '请输入验证码' },
+  ],
+  newPassword: [
+    { required: true, trigger: 'blur', message: '请输入新密码' },
+    { min: 6, max: 18, trigger: 'blur', message: '密码长度为6到18位' },
+  ],
+  phone: [
+    { required: true, message: '请输入你的手机号', trigger: 'blur' },
+    { pattern: /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/, message: '请输入正确的手机号', trigger: 'blur' },
+  ],
+})
+function handleReset() {
+  loading.value = true
+  resetFormRef.value && resetFormRef.value.validate((valid) => {
+    if (valid) {
+      userApi.forgetPassword({
+        ...resetForm.value,
+        uuid: captchaInfo.value.uuid,
+      }).then((res: any) => {
+        ElMessage.success(res.message)
+        resetFormRef.value && resetFormRef.value.resetFields()
+        loading.value = false
+        formType.value = 'login'
+      }).catch(() => {
+        loading.value = false
+        resetFormRef.value?.resetFields('code')
+        handleGetCaptcha()
+      })
+    }
+  })
+}
 
 function handleGetCaptcha() {
   userApi.captcha().then((res: any) => {
@@ -267,8 +283,8 @@ watch(formType, () => {
           </el-form-item>
           <el-form-item prop="password">
             <el-input
-              v-model="registerForm.password" type="password" placeholder="密码" tabindex="3" autocomplete="on"
-              show-password
+              v-model="registerForm.password" type="password" placeholder="密码" tabindex="3"
+              autocomplete="new-password" show-password
             >
               <template #prefix>
                 <svg-icon name="ep-lock" />
@@ -297,7 +313,8 @@ watch(formType, () => {
           <el-link type="primary" :underline="false" @click="formType = 'login'" v-text="'去登录'" />
         </div>
       </el-form>
-      <!-- <el-form
+
+      <el-form
         v-show="formType === 'reset'" ref="resetFormRef" :model="resetForm" :rules="resetRules" class="login-form"
         auto-complete="on"
       >
@@ -305,27 +322,34 @@ watch(formType, () => {
           <h3 class="title" v-text="'忘记密码了? 🔒'" />
         </div>
         <div>
-          <el-form-item prop="account">
-            <el-input v-model="resetForm.account" placeholder="用户名" tabindex="1" autocomplete="on">
+          <el-form-item prop="username">
+            <el-input v-model="resetForm.username" placeholder="用户名" tabindex="1" autocomplete="on">
               <template #prefix>
                 <svg-icon name="ep-user" />
               </template>
             </el-input>
           </el-form-item>
-          <el-form-item prop="captcha">
-            <el-input v-model="resetForm.captcha" placeholder="验证码" tabindex="2" autocomplete="on">
+          <el-form-item prop="check">
+            <el-input v-model="resetForm.check" placeholder="手机号 或 邮箱" tabindex="1" autocomplete="on">
               <template #prefix>
-                <svg-icon name="ep-key" />
+                <svg-icon name="ep-phone" />
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="code">
+            <el-input v-model="resetForm.code" placeholder="验证码" tabindex="2" autocomplete="on" class="captcha-code">
+              <template #prefix>
+                <svg-icon name="mdi-application-braces-outline" />
               </template>
               <template #append>
-                <el-button>发送验证码</el-button>
+                <el-image :src="captchaInfo.img" fit="fill" @click="handleGetCaptcha" />
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="newPassword">
             <el-input
-              v-model="resetForm.newPassword" type="password" placeholder="新密码" tabindex="3" autocomplete="on"
-              show-password
+              v-model="resetForm.newPassword" type="password" placeholder="新密码" tabindex="3"
+              autocomplete="new-password" show-password
             >
               <template #prefix>
                 <svg-icon name="ep-lock" />
@@ -344,7 +368,7 @@ watch(formType, () => {
             返回登录
           </el-link>
         </div>
-      </el-form> -->
+      </el-form>
     </div>
     <Copyright />
   </div>

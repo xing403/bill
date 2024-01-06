@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Icon, iconExists } from '@iconify/vue'
+import { Icon } from '@iconify/vue'
+import Iconify from '@iconify/iconify'
 
 defineOptions({
   name: 'SvgIcon',
@@ -12,7 +13,7 @@ const props = defineProps<{
   color?: string
   size?: string | number
 }>()
-
+const icon = ref(true)
 const style = computed(() => {
   const transform = []
   if (props.flip) {
@@ -38,11 +39,17 @@ const style = computed(() => {
     ...(transform.length && { transform: transform.join(' ') }),
   }
 })
+
+async function iconExists(name: string) {
+  Iconify.loadIcon(name).then(() => icon.value = true).catch(() => icon.value = false)
+}
+
+iconExists(props.name)
 </script>
 
 <template>
   <i class="icon" :style="style">
-    <Icon v-if="iconExists(name)" :icon="name" />
+    <Icon v-if="icon" :icon="name" />
     <svg v-else aria-hidden="true">
       <use :xlink:href="`#icon-${name}`" />
     </svg>
