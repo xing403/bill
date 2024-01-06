@@ -109,7 +109,10 @@ router.beforeEach(async (to, from, next) => {
     }
   }
   else {
-    if (to.name !== 'login') {
+    if (to.name === 'share') {
+      next()
+    }
+    else if (to.name !== 'login') {
       next({
         name: 'login',
         query: {

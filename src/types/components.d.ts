@@ -7,8 +7,10 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AllIncomeAndExpense: typeof import('./../components/Statistics/AllIncomeAndExpense.vue')['default']
     Auth: typeof import('./../components/Auth/index.vue')['default']
     AuthAll: typeof import('./../components/AuthAll/index.vue')['default']
+    BannerStatistics: typeof import('./../components/Statistics/BannerStatistics.vue')['default']
     ColorfulCard: typeof import('./../components/ColorfulCard/index.vue')['default']
     FileUpload: typeof import('./../components/FileUpload/index.vue')['default']
     FixedActionBar: typeof import('./../components/FixedActionBar/index.vue')['default']
@@ -26,6 +28,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./../components/SearchBar/index.vue')['default']
+    Share: typeof import('./../components/Share/index.vue')['default']
     SvgIcon: typeof import('./../components/SvgIcon/index.vue')['default']
     SystemInfo: typeof import('./../components/SystemInfo/index.vue')['default']
     Trend: typeof import('./../components/Trend/index.vue')['default']
