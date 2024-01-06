@@ -17,6 +17,8 @@
     "release": "bumpp"
   },
   "dependencies": {
+    "@iconify/iconify": "^3.1.1",
+    "@iconify/json": "^2.2.165",
     "@vueuse/core": "^10.4.0",
     "@vueuse/integrations": "^10.4.0",
     "axios": "^1.4.0",
@@ -25,6 +27,7 @@
     "element-plus": "^2.4.4",
     "eruda": "^3.0.1",
     "hotkeys-js": "^3.12.0",
+    "js-md5": "^0.7.3",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",
     "mockjs": "^1.1.0",
@@ -40,8 +43,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.41.0",
-    "@iconify/json": "^2.2.164",
     "@iconify/vue": "^4.1.1",
+    "@types/js-md5": "^0.7.2",
     "@types/nprogress": "^0.2.0",
     "@types/path-browserify": "^1.0.0",
     "@types/qrcode": "^1.5.5",

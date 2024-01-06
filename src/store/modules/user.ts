@@ -70,7 +70,7 @@ const useUserStore = defineStore(
       newPassword: string
       checkPassword: string
     }) {
-      await apiUser.passwordEdit(data)
+      return await apiUser.passwordEdit(data)
     }
 
     return {

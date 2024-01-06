@@ -64,7 +64,7 @@ function userCommand(command: 'home' | 'setting' | 'hotkeys' | 'logout') {
     </div>
     <el-dropdown class="user-container" size="default" @command="userCommand">
       <div class="user-wrapper">
-        <el-avatar size="small" :src="userInformation.avatar">
+        <el-avatar size="small" :src="userInformation?.avatar">
           <svg-icon name="ep-user-filled" />
         </el-avatar>
         {{ userStore.account }}

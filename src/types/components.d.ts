@@ -10,8 +10,6 @@ declare module 'vue' {
     Auth: typeof import('./../components/Auth/index.vue')['default']
     AuthAll: typeof import('./../components/AuthAll/index.vue')['default']
     ColorfulCard: typeof import('./../components/ColorfulCard/index.vue')['default']
-    Detail: typeof import('./../components/User/detail.vue')['default']
-    Edit: typeof import('./../components/User/edit.vue')['default']
     FileUpload: typeof import('./../components/FileUpload/index.vue')['default']
     FixedActionBar: typeof import('./../components/FixedActionBar/index.vue')['default']
     IconTag: typeof import('./../components/IconTag/index.vue')['default']
