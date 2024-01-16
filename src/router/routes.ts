@@ -15,6 +15,13 @@ const constantRoutes: RouteRecordRaw[] = [{
     title: '登录',
   },
 }, {
+  path: '/share/:key',
+  name: 'share',
+  component: () => import('@/views/share.vue'),
+  meta: {
+    title: '分享',
+  },
+}, {
   path: '/:all(.*)*',
   name: 'notFound',
   component: () => import('@/views/[...all].vue'),

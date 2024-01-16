@@ -10,7 +10,7 @@ const useUserStore = defineStore(
     const routeStore = useRouteStore()
     const menuStore = useMenuStore()
 
-    const account = ref(localStorage.username ?? '')
+    const username = ref(localStorage.username ?? '')
     const token = ref(localStorage.token ?? '')
     const failure_time = ref(localStorage.failure_time ?? '')
     const permissions = ref<string[]>([])
@@ -36,7 +36,7 @@ const useUserStore = defineStore(
       localStorage.setItem('username', data.username)
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('failure_time', res.data.failure_time)
-      account.value = res.data.account
+      username.value = data.username
       token.value = res.data.token
       failure_time.value = res.data.failure_time
     }
@@ -45,7 +45,7 @@ const useUserStore = defineStore(
       localStorage.removeItem('username')
       localStorage.removeItem('token')
       localStorage.removeItem('failure_time')
-      account.value = ''
+      username.value = ''
       token.value = ''
       failure_time.value = ''
       routeStore.removeRoutes()
@@ -74,7 +74,7 @@ const useUserStore = defineStore(
     }
 
     return {
-      account,
+      username,
       token,
       permissions,
       information,

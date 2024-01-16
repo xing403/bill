@@ -11,4 +11,5 @@ export default {
   information: () => api.get('/bill/information', { headers: {} }),
   incomeAndExpenseByMonth: (data: { dataTime: string }) => api.post('/bill/incomeAndExpenseByMonth', data, { headers: { format: true } }),
   incomeAndExpenseByYear: (data: { dataTime: string }) => api.post('/bill/incomeAndExpenseByYear', data, { headers: { format: true } }),
+  incomeAndExpenseByDay: (data: { dataTime: string }) => api.post('/bill/incomeAndExpenseByDay', data, { headers: { format: true } }),
 }

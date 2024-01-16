@@ -14,18 +14,38 @@ const { width, height } = useElementSize(chartRef)
 
 const incomeAndExpenseByYear = ref([])
 const dataTime = ref(dayjs().format('YYYY'))
-function handleGetIncomeAndExpenseByMonth() {
+const shareData = ref('')
+
+function handleGetIncomeAndExpenseByYear() {
+  if (dataTime.value === null) {
+    return
+  }
   billApi.incomeAndExpenseByYear({ dataTime: dataTime.value }).then((res) => {
     incomeAndExpenseByYear.value = res.data.map((item: any) => {
       item.income = Number(item.income).toFixed(2)
       item.expense = Number(item.expense).toFixed(2)
       return item
     })
-    drawChartByMonthDay()
+    shareData.value = JSON.stringify({
+      value: incomeAndExpenseByYear.value,
+      config: {
+        col: [{
+          label: '月份',
+          prop: 'month',
+        }, {
+          label: '收入',
+          prop: 'income',
+        }, {
+          label: '支出',
+          prop: 'expense',
+        }],
+      },
+    })
+    drawChartByYear()
   })
 }
 
-function drawChartByMonthDay() {
+function drawChartByYear() {
   const colors = ['#EE6666', '#91CC75', '#5470C6']
   chart.value && chart.value.setOption({
     title: { text: `${dataTime.value} 收入支出详情` },
@@ -78,7 +98,7 @@ function drawChartByMonthDay() {
 onMounted(() => {
   nextTick(() => {
     chart.value = echarts.init(chartRef.value)
-    handleGetIncomeAndExpenseByMonth()
+    handleGetIncomeAndExpenseByYear()
   })
 })
 watchArray([width, height], () => {
@@ -88,8 +108,22 @@ watchArray([width, height], () => {
 
 <template>
   <div>
-    <page-main>
+    <el-card shadow="never">
+      <template #header>
+        <div class="chart-header" flex="~ row justify-between items-center">
+          <div class="chart-title" flex="~ row items-center">
+            <div>{{ dataTime }} 收支情况</div>
+            <share v-model:data="shareData" type="table" />
+          </div>
+          <div class="chart-option">
+            <el-date-picker
+              v-model="dataTime" type="year" value-format="YYYY" :editable="false" placeholder="选择日期时间"
+              @change="handleGetIncomeAndExpenseByYear"
+            />
+          </div>
+        </div>
+      </template>
       <div ref="chartRef" h-450px />
-    </page-main>
+    </el-card>
   </div>
 </template>
