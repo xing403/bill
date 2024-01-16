@@ -17,7 +17,7 @@ function handleSettingShare() {
     inputType: 'number',
     inputValidator: (value: number) => value >= 0 && value <= 30,
     inputValue: 3,
-  }).then(({ value }) => {
+  } as any).then(({ value }) => {
     shareApi.share({ v: props.data, valid: value, type: props.type }).then((res: any) => {
       ElMessage.success('分享成功')
       url.value = `${window.location.origin}/${window.location.hash}share/${res.data}`
