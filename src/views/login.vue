@@ -32,10 +32,10 @@ const redirect = ref(route.query.redirect?.toString() ?? '/')
 // 登录
 const loginFormRef = ref<FormInstance>()
 const loginForm = ref({
-  username: localStorage.login_account || '',
+  username: localStorage.login_username || '',
   password: '',
   code: '',
-  remember: !!localStorage.login_account,
+  remember: !!localStorage.login_username,
 })
 const captchaInfo = ref({
   uuid: '',
@@ -63,10 +63,10 @@ function handleLogin() {
       }).then(() => {
         loading.value = false
         if (loginForm.value.remember) {
-          localStorage.setItem('login_account', loginForm.value.username)
+          localStorage.setItem('login_username', loginForm.value.username)
         }
         else {
-          localStorage.removeItem('login_account')
+          localStorage.removeItem('login_username')
         }
         router.replace(redirect.value)
       }).catch(() => {
@@ -136,7 +136,7 @@ function handleRegister() {
 // 重置密码
 const resetFormRef = ref<FormInstance>()
 const resetForm = ref({
-  username: localStorage.login_account || '',
+  username: localStorage.login_username || '',
   code: '',
   check: '',
   newPassword: '',

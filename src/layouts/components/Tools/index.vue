@@ -67,7 +67,7 @@ function userCommand(command: 'home' | 'setting' | 'hotkeys' | 'logout') {
         <el-avatar size="small" :src="userInformation?.avatar">
           <svg-icon name="ep-user-filled" />
         </el-avatar>
-        {{ userStore.account }}
+        {{ userStore.username }}
         <svg-icon name="ep-caret-bottom" />
       </div>
       <template #dropdown>
