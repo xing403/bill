@@ -11,6 +11,7 @@ const routes: RouteRecordRaw = {
     icon: 'ep:user',
     auth: ['admin', 'root'],
   },
+  redirect: '/user/list',
   children: [{
     path: 'list',
     name: 'user-list',
