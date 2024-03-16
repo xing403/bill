@@ -10,6 +10,7 @@ const routes: RouteRecordRaw = {
     title: '账单管理',
     icon: 'ep:list',
   },
+  redirect: '/bill/addition',
   children: [{
     path: 'addition',
     name: 'bill-addition',

@@ -190,6 +190,9 @@ onMounted(() => {
 
 watch(formType, () => {
   handleGetCaptcha()
+  loginFormRef.value?.resetFields()
+  registerFormRef.value?.resetFields()
+  resetFormRef.value?.resetFields()
 })
 </script>
 
